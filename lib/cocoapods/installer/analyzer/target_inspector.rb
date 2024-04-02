@@ -104,11 +104,11 @@ module Pod
           native_targets = user_project.native_targets
           target = native_targets.find { |t| t.name == target_definition.name.to_s }
 
-          if target {
+          if target
             [target]
-          } else {
+          else
             []
-          }
+          end
           
           # unless target
           #   found = native_targets.map { |t| "`#{t.name}`" }.to_sentence
