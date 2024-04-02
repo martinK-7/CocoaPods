@@ -434,8 +434,10 @@ module Pod
         aggregate_targets = resolver_specs_by_target.keys.reject(&:abstract?).map do |target_definition|
           if target_inspections[target_definition]
             generate_aggregate_target(target_definition, target_inspections, pod_targets_by_target_definition)
+          else
+            nil
           end
-        end
+        end.compact
 
         if !aggregate_targets.empty?
           aggregate_targets.each do |target|
