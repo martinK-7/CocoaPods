@@ -1195,7 +1195,9 @@ module Pod
             target_inspectors.each do |inspector|
               target_definition = inspector.target_definition
               results = inspector.compute_results(project)
-              inspection_result[target_definition] = results
+              if results
+                inspection_result[target_definition] = results
+              end
               UI.message('Using `ARCHS` setting to build architectures of ' \
                 "target `#{target_definition.label}`: (`#{results.archs.join('`, `')}`)")
             end

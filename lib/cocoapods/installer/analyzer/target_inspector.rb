@@ -38,16 +38,22 @@ module Pod
           raise ArgumentError, 'Cannot compute results without a user project set' unless user_project
 
           targets = compute_targets(user_project)
-          project_target_uuids = targets.map(&:uuid)
-          build_configurations = compute_build_configurations(targets)
-          platform = compute_platform(targets)
-          archs = compute_archs(targets)
-          swift_version = compute_swift_version_from_targets(targets)
 
-          result = TargetInspectionResult.new(target_definition, user_project, project_target_uuids,
-                                              build_configurations, platform, archs)
-          result.target_definition.swift_version = swift_version
-          result
+          if targets
+
+            project_target_uuids = targets.map(&:uuid)
+            build_configurations = compute_build_configurations(targets)
+            platform = compute_platform(targets)
+            archs = compute_archs(targets)
+            swift_version = compute_swift_version_from_targets(targets)
+
+            result = TargetInspectionResult.new(target_definition, user_project, project_target_uuids,
+                                                build_configurations, platform, archs)
+            result.target_definition.swift_version = swift_version
+            result
+          else
+            nil
+          end
         end
 
         # Returns the path of the user project that the #target_definition
@@ -107,7 +113,7 @@ module Pod
           if target
             [target]
           else
-            []
+            nil
           end
           
           # unless target
