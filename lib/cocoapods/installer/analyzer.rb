@@ -432,7 +432,9 @@ module Pod
         pod_targets = generate_pod_targets(resolver_specs_by_target, target_inspections)
         pod_targets_by_target_definition = group_pod_targets_by_target_definition(pod_targets, resolver_specs_by_target)
         aggregate_targets = resolver_specs_by_target.keys.reject(&:abstract?).map do |target_definition|
-          generate_aggregate_target(target_definition, target_inspections, pod_targets_by_target_definition)
+          if target_inspections[target_definition]
+            generate_aggregate_target(target_definition, target_inspections, pod_targets_by_target_definition)
+          end
         end
         aggregate_targets.each do |target|
           search_paths_aggregate_targets = aggregate_targets.select do |aggregate_target|
