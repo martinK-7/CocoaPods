@@ -1197,9 +1197,9 @@ module Pod
               results = inspector.compute_results(project)
               if results
                 inspection_result[target_definition] = results
+                UI.message('Using `ARCHS` setting to build architectures of ' \
+                  "target `#{target_definition.label}`: (`#{results.archs.join('`, `')}`)")
               end
-              UI.message('Using `ARCHS` setting to build architectures of ' \
-                "target `#{target_definition.label}`: (`#{results.archs.join('`, `')}`)")
             end
           end
         end
