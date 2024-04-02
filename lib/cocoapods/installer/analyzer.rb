@@ -436,30 +436,33 @@ module Pod
             generate_aggregate_target(target_definition, target_inspections, pod_targets_by_target_definition)
           end
         end
-        aggregate_targets.each do |target|
-          search_paths_aggregate_targets = aggregate_targets.select do |aggregate_target|
-            target.target_definition.targets_to_inherit_search_paths.include?(aggregate_target.target_definition)
-          end
-          target.search_paths_aggregate_targets.concat(search_paths_aggregate_targets).freeze
-        end
 
-        aggregate_targets.each do |aggregate_target|
-          is_app_extension = !(aggregate_target.user_targets.map(&:symbol_type) &
-              [:app_extension, :watch_extension, :watch2_extension, :tv_extension, :messages_extension]).empty?
-          is_app_extension ||= aggregate_target.user_targets.any? do |user_target|
-            user_target.common_resolved_build_setting('APPLICATION_EXTENSION_API_ONLY', :resolve_against_xcconfig => true) == 'YES'
-          end
-          if is_app_extension
-            aggregate_target.mark_application_extension_api_only
-            aggregate_target.pod_targets.each(&:mark_application_extension_api_only)
+        if !aggregate_targets.empty?
+          aggregate_targets.each do |target|
+            search_paths_aggregate_targets = aggregate_targets.select do |aggregate_target|
+              target.target_definition.targets_to_inherit_search_paths.include?(aggregate_target.target_definition)
+            end
+            target.search_paths_aggregate_targets.concat(search_paths_aggregate_targets).freeze
           end
 
-          build_library_for_distribution = aggregate_target.user_targets.any? do |user_target|
-            user_target.common_resolved_build_setting('BUILD_LIBRARY_FOR_DISTRIBUTION', :resolve_against_xcconfig => true) == 'YES'
-          end
-          if build_library_for_distribution
-            aggregate_target.mark_build_library_for_distribution
-            aggregate_target.pod_targets.each(&:mark_build_library_for_distribution)
+          aggregate_targets.each do |aggregate_target|
+            is_app_extension = !(aggregate_target.user_targets.map(&:symbol_type) &
+                [:app_extension, :watch_extension, :watch2_extension, :tv_extension, :messages_extension]).empty?
+            is_app_extension ||= aggregate_target.user_targets.any? do |user_target|
+              user_target.common_resolved_build_setting('APPLICATION_EXTENSION_API_ONLY', :resolve_against_xcconfig => true) == 'YES'
+            end
+            if is_app_extension
+              aggregate_target.mark_application_extension_api_only
+              aggregate_target.pod_targets.each(&:mark_application_extension_api_only)
+            end
+
+            build_library_for_distribution = aggregate_target.user_targets.any? do |user_target|
+              user_target.common_resolved_build_setting('BUILD_LIBRARY_FOR_DISTRIBUTION', :resolve_against_xcconfig => true) == 'YES'
+            end
+            if build_library_for_distribution
+              aggregate_target.mark_build_library_for_distribution
+              aggregate_target.pod_targets.each(&:mark_build_library_for_distribution)
+            end
           end
         end
 
